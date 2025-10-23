@@ -1,14 +1,43 @@
-// PROMACACION DINAMICA
-// MINI PROYECTO 1 - JUEGO DE TIC TAC TOE
 #include <iostream>
-#include <conio.h>
 #include <string>
+#include <cstdlib>
+#include <ctime>
+#ifdef _WIN32
+#include <conio.h>
+#endif
 using namespace std;
 
-// Procedimiento para mostrar las reglas
-void reglas()
+// =============================================================
+// PROTOTIPOS
+// =============================================================
+void mostrarInicio();
+void pedirNombres(string &jugador1, string &jugador2);
+int elegirTurnoAleatorio(string jugador1, string jugador2);
+void limpiarPantalla();
+void mostrarTablero(char tablero[3][3]);
+
+// =============================================================
+// FUNCION PRINCIPAL
+// =============================================================
+int main()
 {
-    system("cls");
+    string jugador1, jugador2;
+    char tablero[3][3] = {{'1', '2', '3'}, {'4', '5', '6'}, {'7', '8', '9'}};
+
+    mostrarInicio();
+    limpiarPantalla();
+    pedirNombres(jugador1, jugador2);
+    elegirTurnoAleatorio(jugador1, jugador2);
+    mostrarTablero(tablero);
+
+    return 0;
+}
+
+// =============================================================
+// DEFINICIONES DE FUNCIONES
+// =============================================================
+void mostrarInicio()
+{
     cout << "==============================================================" << endl;
     cout << "|                 ****** BIENVENIDO A ******                 |" << endl;
     cout << "|                     *** TIC TAC TOE ***                    |" << endl;
@@ -48,31 +77,65 @@ void reglas()
     cout << "                          ( UwU )                             " << endl;
     cout << "==============================================================" << endl;
     cout << "Presiona cualquier tecla para continuar..." << endl;
-    getch();
 }
 
 void pedirNombres(string &jugador1, string &jugador2)
 {
     cout << "==============================================================" << endl;
     cout << "NOMBRE DE LOS JUGADORES" << endl;
-    cout << "--------------------------------------------------------------" << endl;
-
+    cout << "==============================================================" << endl;
     cout << "Ingresa el nombre del jugador 1: ";
     getline(cin, jugador1);
-
     cout << "Ingresa el nombre del jugador 2: ";
     getline(cin, jugador2);
-
     cout << "==============================================================" << endl;
 }
 
-int main()
+int elegirTurnoAleatorio(string jugador1, string jugador2)
 {
-    string jugador1, jugador2;
-    reglas();
-    system("cls");
-    pedirNombres(jugador1, jugador2);
+    srand(time(0));
+    int turno = rand() % 2; // 0 o 1
+    cout << endl;
+    cout << "==============================================================" << endl;
+    cout << "Que los Dioses del Tic Tac Toe decidan quien empieza..." << endl;
+    cout << (turno == 0 ? jugador1 : jugador2) << " empieza la partida." << endl;
+    cout << "==============================================================" << endl;
+#ifdef _WIN32
+    system("pause");
+#else
+    cout << "Presiona ENTER para continuar...";
+    cin.get();
+#endif
+    return turno;
+}
 
-    cout << "Jugador 1: " << jugador1 << endl;
-    cout << "Jugador 2: " << jugador2 << endl;
+void limpiarPantalla()
+{
+#ifdef _WIN32
+    system("cls");
+#else
+    system("clear");
+#endif
+}
+
+// =============================================================
+// MUESTRA EL TABLERO
+// =============================================================
+void mostrarTablero(char tablero[3][3])
+{
+    cout << "============ A JUGAR! ============" << endl;
+    for (int i = 0; i < 3; i++)
+    {
+        cout << " ";
+        for (int j = 0; j < 3; j++)
+        {
+            cout << tablero[i][j];
+            if (j < 2)
+                cout << " | ";
+        }
+        cout << endl;
+        if (i < 2)
+            cout << "---+---+---" << endl;
+    }
+    cout << "=================================" << endl;
 }
