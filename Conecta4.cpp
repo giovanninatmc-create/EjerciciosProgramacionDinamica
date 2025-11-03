@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
+#include <locale.h>
 #include <ctime>
 #ifdef _WIN32
 #include <conio.h>
@@ -23,12 +24,14 @@ void mostrarTablero(char tablero[6][7]);
 bool hayGanador(char tablero[6][7]);
 bool tableroLleno(char tablero[6][7]);
 void mostrarResultadosFinales(string jugador1, string jugador2, int v1, int v2);
+void idioma();
 
 // =============================================================
 // FUNCION PRINCIPAL
 // =============================================================
 int main()
 {
+    idioma();
     string jugador1, jugador2;
     int victoriasJ1 = 0, victoriasJ2 = 0;
     char opcion;
@@ -48,15 +51,29 @@ int main()
         limpiarPantalla();
 
         // SELECCION DE MODO DE JUEGO
-        // Pide al usuario seleccionar el modo de juego y lo lee la variable modo
-        cout << "==============================================================" << endl;
-        cout << "Elige modo de juego:" << endl;
-        cout << "1. Jugador vs Jugador" << endl;
-        cout << "2. Jugador vs CPU" << endl;
-        cout << "==============================================================" << endl;
-        cout << "Opcion: ";
-        cin >> modo;
-        cin.ignore();
+        do
+        {
+            cout << "==============================================================" << endl;
+            cout << "Elige modo de juego:" << endl;
+            cout << "1. Jugador vs Jugador" << endl;
+            cout << "2. Jugador vs CPU" << endl;
+            cout << "==============================================================" << endl;
+            cout << "Opcion: ";
+            cin >> modo;
+            cin.ignore();
+
+            if (modo < 1 || modo > 2)
+            {
+                cout << "Opción no válida. Intenta de nuevo." << endl;
+#ifdef _WIN32
+                system("pause");
+#else
+                cout << "Presiona ENTER para continuar...";
+                cin.get();
+#endif
+                limpiarPantalla();
+            }
+        } while (modo < 1 || modo > 2);
 
         if (modo == 2) // Valida el modo de juego con una variable bool
             vsCPU = true;
@@ -216,6 +233,15 @@ void limpiarPantalla()
 }
 
 // =============================================================
+// FUNCIÓN: IDIOMA
+// =============================================================
+void idioma()
+{
+    system("chcp 65001 > nul");       // Cambia la codificación de la consola a UTF-8 (función de C estándar)
+    setlocale(LC_ALL, "es_MX.UTF-8"); // Función estándar de C para establecer el idioma de ejecución
+}
+
+// =============================================================
 // FUNCION PRINCIPAL DEL JUEGO
 // =============================================================
 int jugar(string jugador1, string jugador2, int turno, bool vsCPU)
@@ -227,7 +253,6 @@ int jugar(string jugador1, string jugador2, int turno, bool vsCPU)
 
     char marca;
     int columna;
-    bool ganador = false;
 
     do
     {
@@ -345,21 +370,26 @@ int jugar(string jugador1, string jugador2, int turno, bool vsCPU)
 // =============================================================
 void mostrarTablero(char tablero[6][7])
 {
-    cout << "============ A JUGAR! ============" << endl;
+    cout << "==============================================================" << endl;
+    cout << "|                      CONECTA 4                            |" << endl;
+    cout << "==============================================================" << endl;
+    cout << "|  1  |  2  |  3  |  4  |  5  |  6  |  7  |" << endl;
+    cout << "|-----+-----+-----+-----+-----+-----+-----|" << endl;
+
     for (int i = 0; i < 6; i++)
     {
-        cout << " ";
+        cout << "|";
         for (int j = 0; j < 7; j++)
         {
-            cout << tablero[i][j];
-            if (j < 6)
-                cout << " | ";
+            cout << "  " << tablero[i][j] << "  |";
         }
         cout << endl;
+
         if (i < 5)
-            cout << "---+---+---+---+---+---+---" << endl;
+            cout << "|-----+-----+-----+-----+-----+-----+-----|" << endl;
     }
-    cout << "=================================" << endl;
+
+    cout << "==============================================================" << endl;
 }
 
 // =============================================================
