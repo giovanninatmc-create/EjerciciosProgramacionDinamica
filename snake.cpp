@@ -1,20 +1,22 @@
 #include <iostream>
-#include <locale.h>
-#include <cstdlib>
+#include <locale.h> // Para cambiar idioma
+#include <cstdlib>  // Para limpiar pantalla
+#include <windows.h>
 using namespace std;
 
-void idioma()
+string NOMBRE_JUGADOR;
+
+void idioma() // Establece el idioma de la consola en español MX
 {
-    system("chcp 65001 > nul");       // Cambia la codificación de la consola a UTF-8
-    setlocale(LC_ALL, "es_MX.UTF-8"); // Configura idioma español (México)
+    system("chcp 65001 > nul");
+    setlocale(LC_ALL, "es_MX.UTF-8");
 }
 
-void lobby()
+void lobby() // Pantalla de inicio del juego
 {
     idioma();
     system("cls");
-
-    cout << "**********************************************S*N*A*K*E*S*" << endl;
+    cout << "***...***...***...***...***...***...***...****S*N*A*K*E*S*" << endl;
     cout << R"(                            _             )" << endl;
     cout << R"(            ___ _ __   __ _| | _____  ___ )" << endl;
     cout << R"(           / __| '_ \ / _` | |/ / _ \/ __|)" << endl;
@@ -43,14 +45,97 @@ void lobby()
     cout << "4. Cada vez que comas, la serpiente se alarga y acelera." << endl;
     cout << "5. Si chocas... ¡GAME OVER!" << endl;
     cout << "\n";
+    cout << "***...***...***...***...***...***...***...****S*N*A*K*E*S*" << endl;
     cout << "Presiona cualquier tecla para continuar..." << endl;
+    cin.get();
+}
+
+void ingresarNombreJugador()
+{
+    system("cls");
+    cout << "***...***...***...***...***...***...***...****S*N*A*K*E*S*" << endl;
     cout << "\n";
-    cout << "**********************************************S*N*A*K*E*S*" << endl;
+    cout << "Antes de comenzar, por favor ingresa tu nombre de jugador: " << endl;
+    cout << "> ";
+    getline(cin, NOMBRE_JUGADOR);
+    cout << "\n ::: Perfecto, " << NOMBRE_JUGADOR << ". ¡Vamos allá! :::" << endl;
+    cout << "\n";
+    cout << R"(            ____                   ____)" << endl;
+    cout << R"(      _,.-'`_ o `;__,        _,.-'`_ o `;__,)" << endl;
+    cout << R"(       _.-'` '---'  '         _.-'` '---'  ')" << endl;
+    cout << "\n";
+    cout << "***...***...***...***...***...***...***...****S*N*A*K*E*S*" << endl;
+    cout << "Presiona una tecla para comenzar el juego..." << endl;
+    cin.get();
+}
+
+void animacionInicio()
+{
+    system("cls");
+    cout << "\n\n\n";
+    cout << "***...***...***...***...***...***...***...****S*N*A*K*E*S*" << endl;
+    cout << "            Preparando el terreno de juego..." << endl;
+    cout << "***...***...***...***...***...***...***...****S*N*A*K*E*S*" << endl;
+    cout << "\n\n";
+
+    const string frames[] = {
+        R"(            ____)",
+        R"(      _,.-'`_ o `;__,)",
+        R"(       _.-'` '---'  ')",
+    };
+
+    cout << "\n";
+
+    // Animación de la serpiente "avanzando"
+    for (int paso = 0; paso <= 25; paso++)
+    {
+        system("cls");
+
+        cout << "\n\n\n";
+        cout << "***...***...***...***...***...***...***...****S*N*A*K*E*S*" << endl;
+        cout << "            CARGANDO EL JUEGO..." << endl;
+        cout << "***...***...***...***...***...***...***...****S*N*A*K*E*S*" << endl;
+        cout << "\n";
+
+        cout << "   ";
+
+        // Dibuja la barra de carga
+        for (int i = 0; i < paso; i++)
+            cout << "=";
+
+        cout << "~~o>";
+        cout << "\n\n";
+
+        // Dibuja la serpiente moviéndose
+        for (auto &linea : frames)
+            cout << linea << endl;
+
+        cout << "\n";
+        cout << "         " << paso * 4 << "% completado..." << endl;
+
+        Sleep(250); // Controla la velocidad de la animación
+    }
+
+    cout << "\n\n";
+    cout << "***...***...***...***...***...***...***...****S*N*A*K*E*S*" << endl;
+    cout << "               ¡Listo! Iniciando partida..." << endl;
+    cout << "***...***...***...***...***...***...***...****S*N*A*K*E*S*" << endl;
+    Sleep(3000);
+    system("cls");
+}
+
+void dibujarTablero()
+{
+    cout << "Aqui deberia ir el tablero, si tuviera uno" << endl;
 }
 
 int main()
 {
     idioma();
     lobby();
+    ingresarNombreJugador();
+    animacionInicio();
+    dibujarTablero();
+
     return 0;
 }
