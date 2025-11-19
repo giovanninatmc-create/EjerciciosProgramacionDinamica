@@ -2,38 +2,54 @@
 #include <string>
 #include <locale>
 #include <windows.h>
+#include <limits>
 using namespace std;
 
-// Prototipos
-void idioma();
-void bienvenida();
-void validarCuenta();
-void menuPrincipal();
-
-// Struct
-struct clientes
+struct DatosDeClientes
 {
     int numeroCuenta;
     double saldoActual;
     int NIP;
-    string nombreCliente;
+    string PrimernombreCliente;
+    string segundoNombreCliente;
     string apellidoPaternoCliente;
     string apellidoMaternoCliente;
     string tipoCuenta;
 };
 
-// Base de datos
-clientes carteraClientes[4] = {
-    {123456, 1500.75, 1234, "Juan", "Pérez", "Gómez", "Ahorros"},
-    {654321, 2500.00, 4321, "María", "López", "Hernández", "Corriente"},
-    {112233, 500.50, 1111, "Carlos", "Ramírez", "Santos", "Ahorros"},
-    {332211, 3000.20, 2222, "Ana", "Torres", "Vega", "Corriente"}};
+DatosDeClientes BaseDeDatosClientes[8] = {
+    {123456, 1500.75, 1234, "Juan", "Carlos", "Perez", "Lopez", "Ahorros"},
+    {234567, 2500.00, 2345, "Maria", "Elena", "Gomez", "Ramirez", "Corriente"},
+    {345678, 3200.50, 3456, "Luis", "Miguel", "Hernandez", "Sanchez", "Ahorros"},
+    {456789, 4100.25, 4567, "Ana", "Isabel", "Torres", "Flores", "Corriente"},
+    {567890, 500.00, 5678, "Carlos", "Andres", "Diaz", "Morales", "Ahorros"},
+    {678901, 750.80, 6789, "Sofia", "Lucia", "Vargas", "Cruz", "Corriente"},
+    {789012, 1200.60, 7890, "Jorge", "Alberto", "Rojas", "Mendoza", "Ahorros"},
+    {890123, 3000.90, 8901, "Laura", "Gabriela", "Castro", "Ortiz", "Corriente"}};
+
+void idioma();
+void MensajeBienvenidaInicial();
+DatosDeClientes *iniciarSesion();
+DatosDeClientes *buscarClientePorCuenta(int numeroCuenta);
+int pedirEntradaNumericaValidada(string mensaje, int digitosExactos);
 
 int main()
 {
     idioma();
-    bienvenida();
-    validarCuenta();
+    MensajeBienvenidaInicial();
+
+    DatosDeClientes *clienteActual = iniciarSesion();
+
+    if (clienteActual != nullptr)
+    {
+        cout << clienteActual->PrimernombreCliente
+             << ", has iniciado sesión correctamente." << endl;
+    }
+    else
+    {
+        cout << "No se pudo iniciar sesión." << endl;
+    }
+
     return 0;
 }
 
@@ -43,60 +59,110 @@ void idioma()
     setlocale(LC_ALL, "es_MX.UTF-8");
 }
 
-void bienvenida()
+void MensajeBienvenidaInicial()
 {
     system("cls");
-    cout << "*     BIENVENIDO AL BANCO DEL MALESTAR     *" << endl;
+    cout << "======================================================================" << endl;
+    cout << " " << endl;
+    cout << "█████▄ ▄████▄ ███  ██ ▄█████ ▄████▄    ▄████  ███  ██ ██▄  ▄██ ▄█████ " << endl;
+    cout << "██▄▄██ ██▄▄██ ██ ▀▄██ ██     ██  ██   ██  ▄▄▄ ██ ▀▄██ ██ ▀▀ ██ ██     " << endl;
+    cout << "██▄▄█▀ ██  ██ ██   ██ ▀█████ ▀████▀    ▀███▀  ██   ██ ██    ██ ▀█████ " << endl;
+    cout << " " << endl;
+    cout << "::::::::::::::::::::::TU DINERO SIEMPRE SEGURO::::::::::::::::::::::::" << endl;
+    cout << " " << endl;
+    cout << "======================================================================" << endl;
+    cout << "Presiona enter para continuar ..." << endl;
 }
 
-void validarCuenta()
+int pedirEntradaNumericaValidada(string mensaje, int digitosExactos)
 {
-    int cuentaIngresada;
-    int nipIngresado;
-    bool cuentaValida = false;
-    int posCliente = -1;
+    string entrada;
+    int numero = 0;
 
-    while (!cuentaValida)
+    while (true)
     {
-        cout << "Por favor, ingrese su número de cuenta: ";
-        cin >> cuentaIngresada;
+        cout << mensaje;
+        getline(cin, entrada);
 
-        // Buscar cuenta por busqueda secuencial
-        for (int i = 0; i < 4; i++)
+        if (entrada.length() != digitosExactos)
+            continue;
+
+        bool soloDigitos = true;
+        for (char c : entrada)
         {
-            if (carteraClientes[i].numeroCuenta == cuentaIngresada)
+            if (!isdigit(c))
             {
-                cuentaValida = true;
-                posCliente = i;
+                soloDigitos = false;
                 break;
             }
         }
 
-        if (!cuentaValida)
+        if (!soloDigitos)
+            continue;
+
+        try
         {
-            cout << "La cuenta no existe. Intente de nuevo.\n\n";
+            numero = stoi(entrada);
+            if (numero < 0)
+                continue;
         }
-    }
+        catch (...)
+        {
+            continue;
+        }
 
-    // Cuenta encontrada
-    cout << "Cuenta válida. Hola, " << carteraClientes[posCliente].nombreCliente << "!" << endl;
-
-    cout << "Ingresa tu NIP: ";
-    cin >> nipIngresado;
-
-    if (nipIngresado == carteraClientes[posCliente].NIP)
-    {
-        cout << "NIP correcto. Acceso concedido.\n";
-        menuPrincipal();
-    }
-    else
-    {
-        cout << "NIP incorrecto. Acceso denegado.\n";
+        return numero;
     }
 }
 
-void menuPrincipal()
+DatosDeClientes *buscarClientePorCuenta(int numeroCuenta)
 {
-    system("cls");
-    cout << "===== MENU PRINCIPAL =====" << endl;
+    for (int i = 0; i < 8; i++)
+    {
+        if (BaseDeDatosClientes[i].numeroCuenta == numeroCuenta)
+        {
+            return &BaseDeDatosClientes[i];
+        }
+    }
+    return nullptr;
+}
+
+DatosDeClientes *iniciarSesion()
+{
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    while (true)
+    {
+        system("cls");
+
+        cout << "================================================= BANCO - G N M C ===" << endl;
+        cout << ":::::::::::::::::::::::::: INICIAR SESIÓN :::::::::::::::::::::::::::" << endl;
+
+        int numeroCuentaIngresado = pedirEntradaNumericaValidada("Ingresa tu número de cuenta (6 dígitos): ", 6);
+
+        DatosDeClientes *clientePorIngresar = buscarClientePorCuenta(numeroCuentaIngresado);
+
+        if (clientePorIngresar == nullptr)
+        {
+            cout << "\nNúmero de cuenta no encontrado." << endl;
+            cout << "Presiona ENTER para volver a intentarlo...";
+            cin.get();
+            continue;
+        }
+
+        int NIPIngresado = pedirEntradaNumericaValidada("Ingresa tu NIP (4 dígitos): ", 4);
+
+        if (NIPIngresado != clientePorIngresar->NIP)
+        {
+            cout << "\nNIP incorrecto." << endl;
+            cout << "Presiona ENTER para volver a intentarlo...";
+            cin.get();
+            continue;
+        }
+
+        cout << "\nInicio de sesión exitoso. Bienvenido, " << clientePorIngresar->PrimernombreCliente << "." << endl;
+        cout << "================================================= BANCO - G N M C ===" << endl;
+
+        return clientePorIngresar;
+    }
 }
