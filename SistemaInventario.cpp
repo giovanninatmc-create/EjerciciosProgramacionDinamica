@@ -1,66 +1,109 @@
-#include <iostream>
-#include <string>
+#include <iostream>  // Incluido para std::cout, std::cin
+#include <string>    //  Incluido para usar std::string
 #include <locale>    // Incluido para setlocale
 #include <windows.h> // Incluido para Sleep
+#include <iomanip>   // Incluido para std::setw, std::setprecision
 using namespace std;
 // Variables globales
-const int registrosInventario = 10;
-
-// Estructuras para productos
-struct Producto
+const int MAXIMO_INVENTARIO = 100; // Máximo de productos en el inventario
+const int productosActuales = 10;  // Número de productos iniciales en el inventario (se ira agregando más productos)
+struct Producto                    // Estructura para almacenar los datos de un producto
 {
+    int claveProducto;
     string nombreProducto;
     int cantidadDisponible;
     double precioUnitario;
 };
 
-Producto inventario[registrosInventario] = {
-    {"Laptop", 10, 15000.00},
-    {"Smartphone", 25, 8000.00},
-    {"Tablet", 15, 6000.00},
-    {"Monitor", 8, 4000.00},
-    {"Teclado", 30, 500.00},
-    {"Mouse", 50, 300.00},
-    {"Impresora", 5, 2500.00},
-    {"Router", 12, 1200.00},
-    {"Disco Duro", 20, 3500.00},
-    {"Memoria USB", 40, 700.00}};
+Producto inventario[MAXIMO_INVENTARIO] = { // Inventario inicial de diez productos
+    {101, "Manzanas", 50, 40.00},
+    {102, "Platano", 30, 18.50},
+    {103, "Naranjas", 20, 20.80},
+    {104, "Leche", 15, 29.90},
+    {105, "Pan", 25, 5.00},
+    {106, "Huevos", 40, 45.00},
+    {107, "Queso", 10, 48.75},
+    {108, "Arroz", 60, 21.20},
+    {109, "Frijoles", 70, 36.50},
+    {110, "Azucar", 80, 22.10}};
 
+// ========================================================================================================
 // Prototipos de funciones
-void idioma();
-void iniciarSesion();
-void
+void idioma();             // Configurar idioma y codificación
+void menuPrincipal();      // Menú principal del sistema de inventario
+void imprimirInventario(); // Mostrar el inventario completo
 
-    int
-    main()
+// ========================================================================================================
+// Función principal
+int main()
 {
-
-    idioma(); // Configurar idioma y codificación
-    imprimirInventario();
-    getchar();
+    idioma();        // Configurar idioma y codificación
+    menuPrincipal(); // Mostrar el menú principal del sistema de inventario
     return 0;
 }
 
+// ========================================================================================================
+// Definición de funciones
+
 void idioma() // Configurar idioma y codificación
 {
-    system("chcp 65001 > nul");
-    setlocale(LC_ALL, "es_MX.UTF-8");
+    system("chcp 65001 > nul");       // Cambiar a UTF-8 en Windows
+    setlocale(LC_ALL, "es_MX.UTF-8"); // Configurar localización a español de México
 }
 
-// Imprimir inventario
-void imprimirInventario()
+void menuPrincipal() // Menú principal del sistema de inventario
+{
+    int opcionMenu;
+    system("cls");
+    cout << "========================     MENÚ PRINCIPAL    ========================" << endl;
+    cout << "1. Ver inventario de productos." << endl;
+    cout << "2. Agregar un nuevo producto." << endl;
+    cout << "3. Eliminar un producto." << endl;
+    cout << "4. Actualizar datos de producto." << endl;
+    cout << "5. Salir del sistema" << endl;
+    cout << "=======================================================================\n";
+    cout << "Selecciona una opción (1-5): ";
+    do
+    {
+        cin >> opcionMenu;
+        switch (opcionMenu)
+        {
+        case 1:
+            imprimirInventario();
+            break;
+        case 5:
+            cout << "Saliendo del sistema..." << endl;
+            Sleep(5000);
+            break;
+        default:
+            cout << "Opcion invalida: " << opcionMenu << ", intenta nuevamente." << endl;
+        }
+    } while (opcionMenu != 5);
+}
+
+void imprimirInventario() // Mostrar el inventario completo
 {
     system("cls");
     cout << "======================== INVENTARIO DE PRODUCTOS ========================" << endl;
-    cout << "Nombre del Producto       | Cantidad Disponible | Precio Unitario (MXN)" << endl;
-    cout << "-----------------------------------------------------------------------" << endl;
-    for (int i = 0; i < registrosInventario; i++)
-    {
-        cout << inventario[i].nombreProducto << "           | "
-             << inventario[i].cantidadDisponible << "                 | $"
-             << inventario[i].precioUnitario << endl;
+    cout << left << setw(10) << "Clave" //  Encabezados de la tabla
+         << left << setw(20) << "Producto"
+         << right << setw(12) << "Cantidad"
+         << right << setw(20) << "Precio Unitario" << endl;
+    cout << "-----------------------------------------------------------------------\n";
+    cout << fixed << setprecision(2); // Formatear números decimales a 2 dígitos
+
+    for (int i = 0; i < productosActuales; i++) // Recorrer el inventario y mostrar cada producto
+    {                                           // Mostrar datos del producto con formato de tabla
+        cout << left << setw(10) << inventario[i].claveProducto
+             << left << setw(20) << inventario[i].nombreProducto
+             << right << setw(12) << inventario[i].cantidadDisponible
+             << right << setw(10) << "$"
+             << right << setw(10) << inventario[i].precioUnitario
+             << endl;
     }
     cout << "=======================================================================\n";
-    cout << "Presiona ENTER para volver...";
+    cout << "Presiona ENTER para regresar al menú principal...";
+    cin.ignore();
     cin.get();
+    menuPrincipal();
 }
