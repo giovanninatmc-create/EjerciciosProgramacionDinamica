@@ -3,11 +3,14 @@
 #include <locale>    // Incluido para setlocale
 #include <windows.h> // Incluido para Sleep
 #include <iomanip>   // Incluido para std::setw, std::setprecision
+#include <limits>
 using namespace std;
+
 // Variables globales
 const int MAXIMO_INVENTARIO = 100; // Máximo de productos en el inventario
-const int productosActuales = 10;  // Número de productos iniciales en el inventario (se ira agregando más productos)
-struct Producto                    // Estructura para almacenar los datos de un producto
+int productosActuales = 10;        // Número de productos iniciales en el inventario (se ira agregando más productos)
+
+struct Producto // Estructura para almacenar los datos de un producto
 {
     int claveProducto;
     string nombreProducto;
@@ -54,30 +57,40 @@ void idioma() // Configurar idioma y codificación
 void menuPrincipal() // Menú principal del sistema de inventario
 {
     int opcionMenu;
-    system("cls");
-    cout << "========================     MENÚ PRINCIPAL    ========================" << endl;
-    cout << "1. Ver inventario de productos." << endl;
-    cout << "2. Agregar un nuevo producto." << endl;
-    cout << "3. Eliminar un producto." << endl;
-    cout << "4. Actualizar datos de producto." << endl;
-    cout << "5. Salir del sistema" << endl;
-    cout << "=======================================================================\n";
-    cout << "Selecciona una opción (1-5): ";
+
     do
     {
+        system("cls");
+        cout << "========================     MENÚ PRINCIPAL    ========================" << endl;
+        cout << "1. Ver inventario de productos." << endl;
+        cout << "2. Agregar un nuevo producto." << endl;
+        cout << "3. Eliminar un producto." << endl;
+        cout << "4. Actualizar datos de producto." << endl;
+        cout << "5. Salir del sistema" << endl;
+        cout << "=======================================================================" << endl;
+        cout << "Selecciona una opción (1-5): ";
+
         cin >> opcionMenu;
+
         switch (opcionMenu)
         {
         case 1:
             imprimirInventario();
             break;
+
         case 5:
-            cout << "Saliendo del sistema..." << endl;
-            Sleep(5000);
+            cout << "Presiona Enter para salir del sistema..." << endl;
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cin.get();
             break;
+
         default:
-            cout << "Opcion invalida: " << opcionMenu << ", intenta nuevamente." << endl;
+            cout << "Opcion invalida: " << opcionMenu << endl;
+            cout << "Presiona Enter para reintentar." << endl;
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cin.get();
         }
+
     } while (opcionMenu != 5);
 }
 
@@ -89,7 +102,7 @@ void imprimirInventario() // Mostrar el inventario completo
          << left << setw(20) << "Producto"
          << right << setw(12) << "Cantidad"
          << right << setw(20) << "Precio Unitario" << endl;
-    cout << "-----------------------------------------------------------------------\n";
+    cout << "-----------------------------------------------------------------------" << endl;
     cout << fixed << setprecision(2); // Formatear números decimales a 2 dígitos
 
     for (int i = 0; i < productosActuales; i++) // Recorrer el inventario y mostrar cada producto
@@ -101,9 +114,26 @@ void imprimirInventario() // Mostrar el inventario completo
              << right << setw(10) << inventario[i].precioUnitario
              << endl;
     }
-    cout << "=======================================================================\n";
+
+    cout << "=======================================================================" << endl;
     cout << "Presiona ENTER para regresar al menú principal...";
-    cin.ignore();
+
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     cin.get();
-    menuPrincipal();
+}
+
+void agregarProducto()
+{
+    Producto nuevoProducto;
+    system("cls") if (productosActuales >= MAX_INVENTARIO)
+    {
+        cout << "Inventario lleno, ya no hay espacio para agregar mas productos." << endl;
+        cout << "Presiona Enter para regresar al menú principal" << endl;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin.get();
+        return;
+    }
+
+    
+
 }
